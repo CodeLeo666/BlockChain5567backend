@@ -1,0 +1,22 @@
+// 指定使用协议语法
+syntax = "proto3";
+
+
+// 关键字 server 来定一个服务
+// gRPC 的服务是通过参数和返回类型来指定可以远程调用的方法
+service BlockChain {
+rpc new_block(NewBlockRequest) returns (NewBlockResponse) {}
+}
+
+// 定义消息请求
+// 关键字 message 来定义请求或相应需要使用的消息格式
+message NewBlockRequest {
+int32 proof = 100;
+int64 previous_hash = 1;
+}
+
+// 定义消息响应
+// 关键字 message 来定义请求或相应需要使用的消息格式
+message NewBlockResponse {
+
+}
