@@ -299,36 +299,39 @@ def rwinformation():
 
 @app.route('/mine', methods=['GET'])
 def mine():
-    last_block = blockchain.last_block
-    last_proof = last_block['proof']
-    last_difficulty = blockchain.change_difficulty(last_block);
-    proof = blockchain.proof_of_work(last_proof, last_difficulty)
 
-    # blockchain.newrw(
-    #     AntiCounterfeitingNum="0",
-    #     DealerName="Alice",
-    #     Manufacturer="Bob",
-    #     ProductionTime="1900-01-01",
-    #     ProductionArea="New York",
-    #     LogisticsInformation="NYC->HK"
-    # )
+    while True:
 
-    previous_hash = blockchain.hash(last_block)
-    block = blockchain.new_block(proof, previous_hash)
-    block['difficulty'] = last_difficulty
-    len0  = len(block['current_hash']) - len(block['current_hash'].lstrip('0'))
-    block['current_hash'] = '0' * (block['difficulty']-len0) + block['current_hash']
+        last_block = blockchain.last_block
+        last_proof = last_block['proof']
+        last_difficulty = blockchain.change_difficulty(last_block);
+        proof = blockchain.proof_of_work(last_proof, last_difficulty)
 
-    response = {
-        'message': "New Block Forged",
-        'id': block['id'],
-        'Rwdata': str(block['Rwdata']),
-        'timestamp':block['timestamp'],
-        'proof': block['proof'],
-        'previous_hash': block['previous_hash'],
-        'current_hash': block['current_hash'],
-        'difficulty': block['difficulty']
-    }
+        # blockchain.newrw(
+        #     AntiCounterfeitingNum="0",
+        #     DealerName="Alice",
+        #     Manufacturer="Bob",
+        #     ProductionTime="1900-01-01",
+        #     ProductionArea="New York",
+        #     LogisticsInformation="NYC->HK"
+        # )
+
+        previous_hash = blockchain.hash(last_block)
+        block = blockchain.new_block(proof, previous_hash)
+        block['difficulty'] = last_difficulty
+        len0  = len(block['current_hash']) - len(block['current_hash'].lstrip('0'))
+        block['current_hash'] = '0' * (block['difficulty']-len0) + block['current_hash']
+
+        response = {
+            'message': "New Block Forged",
+            'id': block['id'],
+            'Rwdata': str(block['Rwdata']),
+            'timestamp':block['timestamp'],
+            'proof': block['proof'],
+            'previous_hash': block['previous_hash'],
+            'current_hash': block['current_hash'],
+            'difficulty': block['difficulty']
+        }
 
     return jsonify(response), 200
 
