@@ -1,8 +1,11 @@
 import hashlib
 import json
 from datetime import datetime
+from random import random
 from time import time
 from uuid import uuid4
+
+import ecdsa as ecdsa
 from flask import Flask, jsonify, request
 from urllib.parse import urlparse
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -150,6 +153,19 @@ class Blockchain(object):
         return block
 
     def newrw(self, DealerName, Manufacturer,ProductionTime,ProductionArea,LogisticsInformation):
+
+        gen = ecdsa.NIST256p.generator
+        order = gen.order()
+        # Generate private key d_ A
+        d_A = random.randrange(1, order - 1)
+        # Generate public and private key objects
+        public_key = ecdsa.ecdsa.Public_key(gen, gen * d_A)
+        private_key = ecdsa.ecdsa.Private_key(public_key, d_A)
+        message = DealerName + Manufacturer+ProductionTime+ProductionArea+LogisticsInformation
+        m = int(hashlib.sha1(message.encode("utf8")).hexdigest(), 16)
+        # Temporary Key
+        k = random.randrange(1, order - 1)
+
         self.currentRw.append({
             'AntiCounterfeitingNum': hash(DealerName+Manufacturer+ProductionTime+ProductionArea+LogisticsInformation),
             'DealerName': DealerName,
